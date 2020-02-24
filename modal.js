@@ -63,17 +63,15 @@ factory('btfModal', function ($animate, $compile, $rootScope, $controller, $q, $
     }
 
     function deactivate () {
-      var deferred = $q.defer();
-      if (element) {
-        $animate.leave(element, function () {
-          scope.$destroy();
-          element = null;
-          deferred.resolve();
-        });
-      } else {
-        deferred.resolve();
+      if (!element) {
+        return $q.when();
       }
-      return deferred.promise;
+      return $animate.leave(element).then(function () {
+        scope.$destroy();
+        scope = null;
+        element.remove();
+        element = null;
+      });
     }
 
     function active () {
